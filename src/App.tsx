@@ -51,8 +51,14 @@ function formatVal(colName, value) {
   const col = colName.toLowerCase();
   if (col.includes("exec real") || col.includes("desaf gap")) {
     if (s.toUpperCase() === "OK") return "OK";
+    if (s.toUpperCase() === "NMETA") return "NMeta";
     const f = parseFloat(s);
-    if (!isNaN(f)) return f === 0 ? "0%" : `${Math.round(f * 100)}%`;
+    if (!isNaN(f)) {
+      if (f === 0) return "0%";
+      // Sheets API retorna decimal (0.45 = 45%) — valores > 1 já são porcentagem inteira
+      if (f > 1) return `${Math.round(f)}%`;
+      return `${Math.round(f * 100)}%`;
+    }
     return s;
   }
   if (s.endsWith(".0")) { const n = parseInt(s); if (!isNaN(n)) return String(n); }
