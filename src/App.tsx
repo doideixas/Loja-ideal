@@ -336,18 +336,18 @@ export default function App() {
               style={{width:"100%",padding:"6px 10px",borderRadius:6,border:"none",fontSize:13,boxSizing:"border-box"}}/>
           </div>
           <div style={{display:"flex",gap:8,marginLeft:"auto"}}>
-            <div style={{background:"rgba(255,255,255,.15)",borderRadius:8,padding:"6px 14px",textAlign:"center",minWidth:60}}>
-              <div style={{fontWeight:800,fontSize:20}}>{stats.total}</div>
-              <div style={{fontSize:10,opacity:.8}}>{aba==="sku"?"Oport.":"PDVs"}</div>
+            <div style={{background:"white",borderRadius:8,padding:"6px 14px",textAlign:"center",minWidth:60,boxShadow:"0 2px 8px rgba(0,0,0,.2)"}}>
+              <div style={{fontWeight:800,fontSize:20,color:"#1e3a5f"}}>{stats.total}</div>
+              <div style={{fontSize:10,color:"#64748b",fontWeight:600}}>{aba==="sku"?"Oport.":"PDVs"}</div>
             </div>
-            <div style={{background:"rgba(22,163,74,.35)",border:"1px solid rgba(22,163,74,.6)",borderRadius:8,padding:"6px 14px",textAlign:"center",minWidth:60}}>
-              <div style={{fontWeight:800,fontSize:20}}>{stats.ok}</div>
-              <div style={{fontSize:10,opacity:.8}}>{stats.label}</div>
+            <div style={{background:"#16a34a",borderRadius:8,padding:"6px 14px",textAlign:"center",minWidth:60,boxShadow:"0 2px 8px rgba(0,0,0,.2)"}}>
+              <div style={{fontWeight:800,fontSize:20,color:"white"}}>{stats.ok}</div>
+              <div style={{fontSize:10,color:"rgba(255,255,255,.85)",fontWeight:600}}>{stats.label}</div>
             </div>
             {aba==="rota"&&(
-              <div style={{background:"rgba(220,38,38,.3)",border:"1px solid rgba(220,38,38,.5)",borderRadius:8,padding:"6px 14px",textAlign:"center",minWidth:60}}>
-                <div style={{fontWeight:800,fontSize:20}}>{stats.total-stats.ok}</div>
-                <div style={{fontSize:10,opacity:.8}}>Com GAP</div>
+              <div style={{background:"#dc2626",borderRadius:8,padding:"6px 14px",textAlign:"center",minWidth:60,boxShadow:"0 2px 8px rgba(0,0,0,.2)"}}>
+                <div style={{fontWeight:800,fontSize:20,color:"white"}}>{stats.total-stats.ok}</div>
+                <div style={{fontSize:10,color:"rgba(255,255,255,.85)",fontWeight:600}}>Com GAP</div>
               </div>
             )}
           </div>
