@@ -169,6 +169,18 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLast] = useState(null);
   const [error, setError]     = useState("");
+  const [sortCol, setSortCol] = useState("gap");   // "gap" | "exec" | "ok"
+  const [sortDir, setSortDir] = useState("asc");   // "asc" | "desc"
+
+  const toggleSort = (col) => {
+    if (sortCol === col) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortCol(col); setSortDir("asc"); }
+  };
+
+  const sortIcon = (col) => {
+    if (sortCol !== col) return " ⇅";
+    return sortDir === "asc" ? " ↑" : " ↓";
+  };
 
   const [rawLoja,    setRawLoja]    = useState([]);
   const [rawDesafio, setRawDesafio] = useState([]);
@@ -204,14 +216,36 @@ export default function App() {
       const q = search.toLowerCase();
       data = data.filter(r => String(r.Fantasia||"").toLowerCase().includes(q) || String(r.Codigo||"").includes(q));
     }
-    return [...data].sort((a,b) => {
-      const ga = gapNum(a.Gap), gb = gapNum(b.Gap);
-      if (ga!==null && gb!==null) return ga-gb;
-      if (ga!==null) return -1;
-      if (gb!==null) return 1;
+
+    const mul = sortDir === "asc" ? 1 : -1;
+
+    const execVal = (r) => {
+      const v = formatVal("exec real", r["Exec Real"]);
+      if (v === "OK") return 999;
+      if (!v) return -1;
+      return parseFloat(v) || 0;
+    };
+
+    const okVal = (r) => {
+      const v = String(r["Lojas Ok"] || "").trim();
+      if (v === "OK") return 999;
+      const n = parseInt(v);
+      return isNaN(n) ? -1 : n;
+    };
+
+    return [...data].sort((a, b) => {
+      if (sortCol === "gap") {
+        const ga = gapNum(a.Gap), gb = gapNum(b.Gap);
+        if (ga !== null && gb !== null) return (ga - gb) * mul;
+        if (ga !== null) return -1 * mul;
+        if (gb !== null) return 1 * mul;
+        return 0;
+      }
+      if (sortCol === "exec") return (execVal(a) - execVal(b)) * mul;
+      if (sortCol === "ok")   return (okVal(a) - okVal(b)) * mul;
       return 0;
     });
-  }, [rawLoja, setor, dia, search]);
+  }, [rawLoja, setor, dia, search, sortCol, sortDir]);
 
   const dadosDesafio = useMemo(() => {
     if (!rawDesafio.length) return [];
@@ -373,8 +407,13 @@ export default function App() {
               <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
                 <thead>
                   <tr>
-                    {[["Código","#1e3a5f"],["Fantasia","#1e3a5f"],["Visita","#1e3a5f"],["Sort Meta","#1e3a5f"],["Sort Real","#1e3a5f"],["Gap Sort","#dc2626"],["Exec Meta","#1e3a5f"],["Exec Real","#1e3a5f"],["Desaf Meta","#1e3a5f"],["Desaf Real","#1e3a5f"],["Desaf Gap","#1e3a5f"],["Loja OK","#16a34a"]].map(([h,bg])=>(
-                      <th key={h} style={{...thStyle(),background:bg}}>{h}</th>
+                    {[["Código","#1e3a5f",null],["Fantasia","#1e3a5f",null],["Visita","#1e3a5f",null],["Sort Meta","#1e3a5f",null],["Sort Real","#1e3a5f",null],["Gap Sort","#dc2626","gap"],["Exec Meta","#1e3a5f",null],["Exec Real","#1e3a5f","exec"],["Desaf Meta","#1e3a5f",null],["Desaf Real","#1e3a5f",null],["Desaf Gap","#1e3a5f",null],["Loja OK","#16a34a","ok"]].map(([h,bg,key])=>(
+                      <th key={h}
+                        onClick={key ? ()=>toggleSort(key) : undefined}
+                        style={{...thStyle(),background:sortCol===key?bg+"cc":bg,cursor:key?"pointer":"default",
+                                userSelect:"none",whiteSpace:"nowrap"}}>
+                        {h}{key ? (sortCol===key ? (sortDir==="asc"?" ↑":" ↓") : " ⇅") : ""}
+                      </th>
                     ))}
                   </tr>
                 </thead>
