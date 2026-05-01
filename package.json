@@ -1,12 +1,11 @@
 {
-  "name": "vite-react-typescript-starter",
+  "name": "loja-ideal",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -15,12 +14,11 @@
     "papaparse": "^5.4.1"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/papaparse": "^5.3.14",
     "@vitejs/plugin-react": "^6.0.1",
-    "eslint": "^10.2.1",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "typescript
+    "typescript": "^5.8.3",
+    "vite": "^8.0.10"
+  }
+}
