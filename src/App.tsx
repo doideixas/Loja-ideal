@@ -18,7 +18,7 @@ const DIAS_IDX        = {0:"SEG",1:"TER",2:"QUA",3:"QUI",4:"SEX",5:"SAB",6:"DOM"
 const getDiaHoje = () => DIAS_IDX[new Date().getDay()] || "SEG";
 
 async function fetchCSV(url) {
-  const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+  const proxy = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
   const res   = await fetch(proxy);
   const text  = await res.text();
   const { data } = Papa.parse(text, { skipEmptyLines: true });
