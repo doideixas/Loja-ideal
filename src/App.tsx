@@ -15,7 +15,9 @@ const SETORES_ALVO    = [121,122,123,124,125,126,127,128,321,322,421];
 const EMBALAGENS_ALVO = ['088','187','032','022','131','062','154','020','068','141'];
 const DIAS            = ["TODOS","SEG","TER","QUA","QUI","SEX","SAB"];
 const DIAS_IDX        = {0:"SEG",1:"TER",2:"QUA",3:"QUI",4:"SEX",5:"SAB",6:"DOM"};
-const getDiaHoje      = () => DIAS_IDX[new Date().getDay()] || "SEG";(rows) {
+const getDiaHoje      = () => DIAS_IDX[new Date().getDay()] || "SEG";
+
+function rowsToObjects(rows) {
   if (!rows || rows.length < 2) return [];
   const headers = rows[0].map(h => String(h).trim());
   return rows.slice(1).map(row => {
