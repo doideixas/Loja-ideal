@@ -1,31 +1,21 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import Papa from "papaparse";
 
-const BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSiYnMB-B3Wc1U6uS_1U-FddIVA6hqV8uDQDAg3aJNy4nrT-3RFOeC5qBIaFKgz62Whi-spG7Or0sq1/pub";
-const URLS = {
-  lojaIdeal: `${BASE}?gid=1616358063&single=true&output=csv`,
-  desafio:   `${BASE}?gid=1876914775&single=true&output=csv`,
-  cadastro:  `${BASE}?gid=1441616580&single=true&output=csv`,
-  vendas:    `${BASE}?gid=1363938611&single=true&output=csv`,
-  estoque:   `${BASE}?gid=1881304588&single=true&output=csv`,
-};
+const SHEET_ID = "1uJMeTGgKZIEZqmTsnD5V3hLt6aBF5eSVIA80lWCP3zw";
+const API_KEY  = "AIzaSyAkOM45l-ssDbG6wpZaZ1I6MKZDx_jvJlw";
+
+async function fetchSheet(sheetName) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheetName)}?key=${API_KEY}`;
+  const res  = await fetch(url);
+  const json = await res.json();
+  if (json.error) throw new Error(json.error.message);
+  return json.values || [];
+}
 
 const SETORES_ALVO    = [121,122,123,124,125,126,127,128,321,322,421];
 const EMBALAGENS_ALVO = ['088','187','032','022','131','062','154','020','068','141'];
 const DIAS            = ["TODOS","SEG","TER","QUA","QUI","SEX","SAB"];
 const DIAS_IDX        = {0:"SEG",1:"TER",2:"QUA",3:"QUI",4:"SEX",5:"SAB",6:"DOM"};
-
-const getDiaHoje = () => DIAS_IDX[new Date().getDay()] || "SEG";
-
-async function fetchCSV(url) {
-  const proxy = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
-  const res   = await fetch(proxy);
-  const text  = await res.text();
-  const { data } = Papa.parse(text, { skipEmptyLines: true });
-  return data;
-}
-
-function rowsToObjects(rows) {
+const getDiaHoje      = () => DIAS_IDX[new Date().getDay()] || "SEG";(rows) {
   if (!rows || rows.length < 2) return [];
   const headers = rows[0].map(h => String(h).trim());
   return rows.slice(1).map(row => {
@@ -182,11 +172,11 @@ export default function App() {
     setLoading(true); setError("");
     try {
       const [loja, desafio, cad, vnd, est] = await Promise.all([
-        fetchCSV(URLS.lojaIdeal),
-        fetchCSV(URLS.desafio),
-        fetchCSV(URLS.cadastro),
-        fetchCSV(URLS.vendas),
-        fetchCSV(URLS.estoque),
+        fetchSheet("Loja Ideal"),
+        fetchSheet("Desafio"),
+        fetchSheet("01.20.11"),
+        fetchSheet("03.05.09"),
+        fetchSheet("Estoque"),
       ]);
       setRawLoja(loja); setRawDesafio(desafio);
       setRawCad(cad); setRawVnd(vnd); setRawEst(est);
