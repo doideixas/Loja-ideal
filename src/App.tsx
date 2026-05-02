@@ -261,8 +261,10 @@ export default function App() {
       data = data.filter(r => String(r["Nome PDV"]||"").toLowerCase().includes(q) || String(r.PDV||"").includes(q));
     }
     return data.map(r => {
-      const meta = parseInt(r["Meta Caixas"]||"0")||0;
-      const real = parseInt(r["Real Desafio"]||"0")||0;
+      // Remove separador de milhar brasileiro (ponto) antes de parsear
+      const parseBR = (v) => parseInt(String(v||"0").replace(/\./g,"").replace(",",".")) || 0;
+      const meta = parseBR(r["Meta Caixas"]);
+      const real = parseBR(r["Real Desafio"]);
       const gap  = meta - real;
       return { ...r, _gap: gap <= 0 ? "OK" : String(gap) };
     });
